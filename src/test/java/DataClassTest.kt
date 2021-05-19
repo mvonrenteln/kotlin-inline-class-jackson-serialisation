@@ -52,7 +52,7 @@ internal class DataClassTest {
     }
 
     @Test
-    fun `test deserialize data class containing inline class and data class() {
+    fun `test deserialize data class containing inline class and data class`() {
         val json = """{"name":"Jon","surename":{"value":"Snow"}}"""
 
         val dataClassDeserialized = objectMapper.readValue(json, FullName::class.java)

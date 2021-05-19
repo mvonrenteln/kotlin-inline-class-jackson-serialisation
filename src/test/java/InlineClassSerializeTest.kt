@@ -4,7 +4,7 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
-internal class DataClassTest {
+internal class InlineClassSerializeTest {
 
     private val objectMapper = ObjectMapper().registerKotlinModule()
 

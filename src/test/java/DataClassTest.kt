@@ -20,7 +20,7 @@ internal class DataClassTest {
     fun `test deserialize inline class`() {
         val json = """{"value":"Jon"}"""
 
-        val deserialized = objectMapper.readValue(json, Name::class.java)
+        val deserialized = objectMapper.readValue<Name>(json)
         assertEquals(Name("Jon"), deserialized)
 
     }
@@ -55,7 +55,7 @@ internal class DataClassTest {
     fun `test deserialize data class containing inline class and data class`() {
         val json = """{"name":"Jon","surename":{"value":"Snow"}}"""
 
-        val dataClassDeserialized = objectMapper.readValue(json, FullName::class.java)
+        val dataClassDeserialized = objectMapper.readValue<FullName>(json)
         val dataClass = FullName(Name("Jon"), Surename("Snow"))
         assertEquals(dataClass, dataClassDeserialized)
 

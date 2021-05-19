@@ -1,4 +1,5 @@
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -8,30 +9,55 @@ internal class DataClassTest {
     private val objectMapper = ObjectMapper().registerKotlinModule()
 
     @Test
-    fun testSerialize() {
-        val dataClass = DataClass(InlineClass("inline value"), InnerDataClass("data class value"))
+    fun `test serialize inline class`() {
+        val dataClass = Name("Jon")
 
         val json = objectMapper.writeValueAsString(dataClass)
-        assertEquals("""{"inlineClass":"inline value","innerDataClass":{"value":"data class value"}}""",
-            json)
+        assertEquals("""Jon""", json)
     }
 
     @Test
-    fun testDeserialize() {
-        val json = """{"inlineClass":"inline value","innerDataClass":{"value":"data class value"}}"""
+    fun `test deserialize inline class`() {
+        val json = """{"value":"Jon"}"""
 
-        val dataClassDeserialized = objectMapper.readValue(json, DataClass::class.java)
-        val dataClass = DataClass(InlineClass("inline value"), InnerDataClass("data class value"))
-        assertEquals(dataClass, dataClassDeserialized)
+        val deserialized = objectMapper.readValue(json, Name::class.java)
+        assertEquals(Name("Jon"), deserialized)
 
     }
 
     @Test
-    fun `test deserialize with value class as object` () {
-        val json = """{"inlineClass":{"value":"inline value"},"innerDataClass":{"value":"data class value"}}"""
+    fun `test serialize data class with inline class`() {
+        val dataClass = SimpleName(Name("Jon"))
 
-        val dataClassDeserialized = objectMapper.readValue(json, DataClass::class.java)
-        val dataClass = DataClass(InlineClass("inline value"), InnerDataClass("data class value"))
+        val json = objectMapper.writeValueAsString(dataClass)
+        assertEquals("""{"name":"Jon"}""", json)
+    }
+
+    @Test
+    fun `test deserialize data class with inline class`() {
+
+        val json = """{"name":"Jon"}"""
+
+        val deserialized = objectMapper.readValue<SimpleName>(json)
+        assertEquals(SimpleName(Name("Jon")), deserialized)
+
+    }
+
+    @Test
+    fun `test serialize data class containing inline class and data class`() {
+        val dataClass = FullName(Name("Jon"), Surename("Snow"))
+
+        val json = objectMapper.writeValueAsString(dataClass)
+        assertEquals("""{"name":"Jon","surename":{"value":"Snow"}}""", json)
+    }
+
+    @Test
+    fun `test deserialize data class containing inline class and data class() {
+        val json = """{"name":"Jon","surename":{"value":"Snow"}}"""
+
+        val dataClassDeserialized = objectMapper.readValue(json, FullName::class.java)
+        val dataClass = FullName(Name("Jon"), Surename("Snow"))
         assertEquals(dataClass, dataClassDeserialized)
+
     }
 }

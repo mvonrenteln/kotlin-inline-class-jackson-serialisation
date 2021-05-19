@@ -5,21 +5,33 @@ import org.junit.jupiter.api.Test
 
 internal class DataClassTest {
 
-    val objectMapper = ObjectMapper().registerKotlinModule()
+    private val objectMapper = ObjectMapper().registerKotlinModule()
 
     @Test
-    fun testSerializeDataClass() {
+    fun testSerialize() {
         val dataClass = DataClass(InlineClass("inline value"), InnerDataClass("data class value"))
-
-        assertEquals("DataClass(inlineClass=InlineClass(value=inline value), innerDataClass=InnerDataClass(value=data class value))",
-            dataClass.toString())
 
         val json = objectMapper.writeValueAsString(dataClass)
         assertEquals("""{"inlineClass":"inline value","innerDataClass":{"value":"data class value"}}""",
             json)
+    }
+
+    @Test
+    fun testDeserialize() {
+        val json = """{"inlineClass":"inline value","innerDataClass":{"value":"data class value"}}"""
 
         val dataClassDeserialized = objectMapper.readValue(json, DataClass::class.java)
+        val dataClass = DataClass(InlineClass("inline value"), InnerDataClass("data class value"))
         assertEquals(dataClass, dataClassDeserialized)
 
+    }
+
+    @Test
+    fun `test deserialize with value class as object` () {
+        val json = """{"inlineClass":{"value":"inline value"},"innerDataClass":{"value":"data class value"}}"""
+
+        val dataClassDeserialized = objectMapper.readValue(json, DataClass::class.java)
+        val dataClass = DataClass(InlineClass("inline value"), InnerDataClass("data class value"))
+        assertEquals(dataClass, dataClassDeserialized)
     }
 }

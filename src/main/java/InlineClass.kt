@@ -1,1 +1,3 @@
-inline class InlineClass(val value: String)
+
+@JvmInline
+value class InlineClass(val value: String)

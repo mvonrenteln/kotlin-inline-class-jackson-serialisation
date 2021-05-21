@@ -1,3 +1,5 @@
+package com.github.mvonrenteln.serialisation.plain
+
 import com.fasterxml.jackson.annotation.JsonCreator
 
 @JvmInline
